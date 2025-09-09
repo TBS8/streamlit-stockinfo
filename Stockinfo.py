@@ -51,6 +51,7 @@ def get_payout_ratio(info):
 def get_yfinance_metrics(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
+    company_name = info.get("longName", ticker.upper())
     hist = stock.history(period="1y")
     wma_200 = hist['Close'].rolling(window=200).mean().iloc[-1]
     return {
@@ -131,7 +132,7 @@ def get_earnings_surprises(ticker, api_key):
         return []
 
 # --- UI ---
-st.title("📈 Stock Intelligence Dashboard")
+
 ticker = st.text_input("Enter Stock Ticker", "AAPL")
 
 if ticker:
@@ -140,6 +141,10 @@ if ticker:
     # --- Badge Row ---
     stock = yf.Ticker(ticker)
     info = stock.info
+    company_name = info.get("longName", ticker.upper())
+
+    st.title(f"📈 {company_name} ({ticker.upper()})")
+
     price = info.get("currentPrice")
     prev_close = info.get("previousClose")
     volume = info.get("volume")
